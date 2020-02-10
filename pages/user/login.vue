@@ -10,7 +10,9 @@
         <el-tab-pane label="登录">
           <userlogin/>
         </el-tab-pane>
-        <el-tab-pane label="注册">配置管理</el-tab-pane>
+        <el-tab-pane label="注册">
+          <register/>
+        </el-tab-pane>
       </el-tabs>
     </div>
   </div>
@@ -18,6 +20,7 @@
 
 <script>
 import userlogin from '@/components/user/hikinglogin'
+import register from '@/components/user/hikingRegister'
 export default {
   data() {
     return {
@@ -39,7 +42,7 @@ export default {
   },
   components: {
     // 用户登录
-    userlogin
+    userlogin,register
   }
 };
 </script>

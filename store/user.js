@@ -1,3 +1,4 @@
+import {Message} from 'element-ui'
 export const state = () => {
     return {
         userInfo: {
@@ -20,5 +21,14 @@ export const actions={
           }).then(res=>{
             store.commit('setuserinfo',res.data)  
           })
+    },
+    getcaptcha(store,data){
+        return this.$axios({
+            url:'/captchas',
+            method:'POST',
+            data:{
+                tel:data
+            }
+        })
     }
 }
