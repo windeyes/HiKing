@@ -33,4 +33,10 @@ a:hover{
 em,i{
   font-style: normal;
 }
+.clearfix::before,
+.clearfix::after{
+  clear: both;
+  content: "";
+  display: block;
+}
 </style>

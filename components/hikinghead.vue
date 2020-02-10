@@ -45,6 +45,7 @@
 
         <span v-else>
           <nuxt-link to="/user/login">登录/注册</nuxt-link>
+
         </span>
       </div>
     </el-row>
@@ -78,7 +79,7 @@ export default {
     margin-right: 20px;
     img {
       width: 156px;
-      vertical-align: middle;
+      vertical-align: middle; 
     }
   }
   .ul {
@@ -103,6 +104,7 @@ export default {
     > span {
       margin-left: 20px;
     }
+
     a:hover {
       color: #409eff;
       text-decoration: underline;

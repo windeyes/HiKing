@@ -1,5 +1,6 @@
 <template>
   <div
+
     class="container"
     :style="`background:url(${bgimg}) center center no-repeat;
     background-size:contain contain;`"
@@ -14,6 +15,7 @@
           <register/>
         </el-tab-pane>
       </el-tabs>
+
     </div>
   </div>
 </template>
@@ -43,9 +45,11 @@ export default {
   components: {
     // 用户登录
     userlogin,register
+
   }
 };
 </script>
+
 
 <style lang="less" scoped>
 /* 最外的容器 */
@@ -71,6 +75,7 @@ export default {
       &:hover{
         color:orange;
       }
+
     }
   }
 }
