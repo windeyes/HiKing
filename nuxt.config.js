@@ -33,8 +33,8 @@ export default {
   plugins: [
     '@/plugins/element-ui',
     //vuex-persistedstate的配置
-    { src: '@/plugins/localStorage.js', ssr: false }
-
+    { src: '@/plugins/localStorage.js', ssr: false },
+    '@/plugins/axios'
   ],
   /*
   ** Nuxt.js dev-modules

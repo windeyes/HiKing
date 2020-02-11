@@ -33,13 +33,11 @@ export default {
       this.$refs.ruleForm.validate((valid) => {
           if (valid) {
             this.$store.dispatch('user/login',this.user).then(res=>{
-              console.log(this.$store.state.user.userInfo)
               this.$message.success('登录成功')
               this.$router.push('/')
             })
            
           } else {
-            console.log('略略类');
             return false;
           }
         })

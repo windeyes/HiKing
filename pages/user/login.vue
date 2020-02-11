@@ -39,7 +39,6 @@ export default {
   },
   methods: {
     titleClick(tab, event){
-      console.log(tab.index)
     }
   },
   components: {

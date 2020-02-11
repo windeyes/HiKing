@@ -60,8 +60,6 @@ export default {
         this.$store.commit('user/setuserinfo',"")
         this.$message.success('已退出登录');
         this.$router.push('/');
-        console.log(123); 
-        console.log(123)
       }
     }
   }
