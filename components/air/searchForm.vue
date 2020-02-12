@@ -16,6 +16,7 @@
                 :fetch-suggestions="queryDepartSearch"
                 placeholder="请搜索出发城市"
                 @select="handleDepartSelect"
+                @blur="defaultDepartChoice"
                 class="el-autocomplete"
                 v-model="userdata.departCity"
                 ></el-autocomplete>
@@ -25,6 +26,7 @@
                 :fetch-suggestions="queryDestSearch"
                 placeholder="请搜索到达城市"
                 @select="handleDestSelect"
+                @blur="defaultDestChoice"
                 class="el-autocomplete"
                 v-model="userdata.destCity"
                 ></el-autocomplete>
@@ -70,7 +72,9 @@ export default {
                 destCity:'',
                 destCode:'',
                 departData:''
-            }
+            },
+            departCityList: [],
+            destCityList: []
         }
     },
     methods: {
@@ -84,6 +88,7 @@ export default {
         queryDepartSearch(value, cb){
             this.$store.dispatch('post/getPlace', this.userdata.departCity)
             .then(res=>{
+                this.departCityList = res
                 cb(res)
             })
            
@@ -94,6 +99,7 @@ export default {
         queryDestSearch(value, cb){
             this.$store.dispatch('post/getPlace',this.userdata.destCity)
             .then(res=>{
+                this.destCityList = res
                 cb(res)
             })
         },
@@ -110,7 +116,17 @@ export default {
             this.userdata.destCity = item.value;
             this.userdata.destCode = item.sort
         },
-
+        // 默认的的出发城市
+        defaultDepartChoice(){
+             console.log(this.departCityList[0]);
+            this.userdata.departCity = this.departCityList[0].value
+            this.userdata.departCode = this.departCityList[0].sort
+        },
+        //默认的到达城市
+        defaultDestChoice(){
+            this.userdata.destCity = this.destCityList[0].value
+            this.userdata.destCode = this.destCityList[0].sort
+        },
         // 确认选择日期时触发
         handleDate(){
            this.userdata.departData=moment(this.userdata.departData).format('YYYY-MM-DD')
