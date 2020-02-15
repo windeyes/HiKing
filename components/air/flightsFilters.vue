@@ -81,7 +81,7 @@ export default {
   },
   computed: {
     filter() {
-      console.log(this.data)
+      // console.log(this.data)
       let arr = this.data.flights.filter((item, index) => {
         let valid = true;
         //若机场名非选定
@@ -130,7 +130,7 @@ export default {
 
     // 选择航空公司时候触发
     handleCompany(value) {
-        console.log(this.company)
+        // console.log(this.company)
     },
 
     // 选择机型时候触发

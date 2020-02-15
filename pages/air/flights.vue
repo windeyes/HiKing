@@ -29,8 +29,9 @@
       </div>
 
       <!-- 侧边栏 -->
-      <div class="aside">
+      <div class="aside" >
         <!-- 侧边栏组件 -->
+        <flightsAside/>
       </div>
     </el-row>
   </section>
@@ -41,7 +42,7 @@ import moment from "moment";
 import flightsListHead from "@/components/air/flightsListHead";
 import flightsItem from "@/components/air/flightsItem";
 import flightsFilters from "@/components/air/flightsFilters";
-
+import flightsAside from "@/components/air/flightsAside"
 export default {
   data() {
     return {
@@ -58,19 +59,11 @@ export default {
   components: {
     flightsListHead,
     flightsItem,
-    flightsFilters
+    flightsFilters,
+    flightsAside
   },
   mounted() {
-    this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      this.flights = res.data.flights;
-      this.total = res.data.total
-      this.data = {...res.data}
-      console.log(this.data);
-      
-    });
+    this.getpagelist()
   },
   methods: {
     handleSizeChange(value){
@@ -82,6 +75,17 @@ export default {
     getdata(arr)    {
       this.total = arr.length
       this.flights = arr
+    },
+    //请求页面数据
+    getpagelist(){
+      this.$axios({
+      url: "/airs",
+      params: this.$route.query
+    }).then(res => {
+      this.flights = res.data.flights;
+      this.total = res.data.total
+      this.data = {...res.data}
+    });
     }
   },
 //   1        0-5      （页码-1）*每页条数 页码*每页条数
@@ -94,7 +98,21 @@ export default {
             let arr = this.flights.slice(start,end)
             return arr
         }
-    }
+    },
+    // watch: {
+    //   // $route(){
+    //   //   this.currentPage = 1;
+    //   //   this.getpagelist()
+    //   // }
+      
+    // }
+    beforeRouteUpdate (to, from, next) {
+        // 每次url变化时候把pageIndex初始化为1
+        this.pageIndex = 1;
+        // 请求机票列表数据
+        this.getList();
+        next();
+    },	    
 };
 </script>
 

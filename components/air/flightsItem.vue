@@ -47,7 +47,8 @@
                         <el-col :span="3" class="choose-button">
                             <el-button 
                             type="warning" 
-                            size="mini">
+                            size="mini"
+                            @click="toOrder(item)">
                             选定
                             </el-button>
                             <p>剩余：{{item.discount}}</p>
@@ -94,6 +95,20 @@ export default {
         }
         this.seatTime = Math.floor(useTime/60) +'时'+ (useTime%60)+'分'
         
+    },
+    methods: {
+        toOrder(item){
+            this.$router({
+                path:'/air/order',
+                // 航班id，坐位id
+                query:{
+                    id:this.data.id,
+                    seat_xid:item.seat_xid
+                }
+            })
+            console.log(item);
+            
+        }
     }
 }
 </script>
