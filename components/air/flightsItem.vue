@@ -98,7 +98,7 @@ export default {
     },
     methods: {
         toOrder(item){
-            this.$router({
+            this.$router.push({
                 path:'/air/order',
                 // 航班id，坐位id
                 query:{
