@@ -5,7 +5,7 @@
       <el-form class="member-info">
         <div class="member-info-item" v-for="(item,index) in form.user" :key="index">
           <el-form-item label="乘机人类型">
-            <el-input placeholder="姓名" class="input-with-select" v-model="item.user">
+            <el-input placeholder="姓名" class="input-with-select" v-model="item.name">
               <el-select slot="prepend" value="1" placeholder="请选择">
                 <el-option label="成人" value="1"></el-option>
               </el-select>
@@ -30,14 +30,13 @@
     <div class="air-column">
       <h2>保险</h2>
       <div>
-          <!-- 渲染保险数据 -->
-        <div class="insurance-item"
-        v-for="(item,index) in infodata.insurances"
-        :key="index">
-          <el-checkbox 
-          :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`" 
-          border
-          @change="insuranceId(item.id)"></el-checkbox>
+        <!-- 渲染保险数据 -->
+        <div class="insurance-item" v-for="(item,index) in infodata.insurances" :key="index">
+          <el-checkbox
+            :label="`${item.type}：￥${item.price}/份×1  最高赔付${item.compensation}`"
+            border
+            @change="insuranceId(item.id)"
+          ></el-checkbox>
         </div>
       </div>
     </div>
@@ -47,11 +46,11 @@
       <div class="contact">
         <el-form label-width="60px">
           <el-form-item label="姓名">
-            <el-input></el-input>
+            <el-input v-model="form.contactName"></el-input>
           </el-form-item>
 
           <el-form-item label="手机">
-            <el-input placeholder="请输入内容">
+            <el-input placeholder="请输入内容" v-model="form.contactPhone">
               <template slot="append">
                 <el-button @click="handleSendCaptcha">发送验证码</el-button>
               </template>
@@ -59,12 +58,13 @@
           </el-form-item>
 
           <el-form-item label="验证码">
-            <el-input></el-input>
+            <el-input v-model="form.captcha"></el-input>
           </el-form-item>
         </el-form>
         <el-button type="warning" class="submit" @click="handleSubmit">提交订单</el-button>
       </div>
     </div>
+    <span>{{allprice}}</span>
   </div>
 </template>
 
@@ -82,14 +82,40 @@ export default {
         ],
         insurances: [],
         contactName: "",
+        captcha:'',
         contactPhone: "",
         invoice: false,
         seat_xid: this.$route.query.seat_xid,
         air: this.$route.query.id
       },
       //机票的详细信息
-      infodata:{}
+      infodata:{
+      }
     };
+  },
+  computed: {
+    allprice(){
+      if(!this.infodata.seat_infos){
+        return
+      }
+      // 总价
+      let allprice = 0
+      // 算一个人的单价
+      // 机票
+      allprice += this.infodata.seat_infos.par_price
+      // 保险 insurances.par_price
+      this.infodata.insurances.forEach(item=>{
+        //是否有购买保险
+        let valid = this.form.insurances.indexOf(item.id)
+        if(valid != -1){
+          allprice += item.price
+        }
+      })
+      //计算总价
+      allprice *= this.form.user.length; 
+      this.$store.commit('air/setallprice',allprice)
+      return ""
+    }
   },
   mounted() {
     const { id, seat_xid } = this.$route.query;
@@ -102,6 +128,7 @@ export default {
     }).then(res => {
       this.infodata = res.data
       console.log(this.infodata);
+      this.$store.commit('air/setOrderdetail',this.infodata)
       
     });
   },
@@ -120,18 +147,87 @@ export default {
     },
 
     // 发送手机验证码
-    handleSendCaptcha() {},
+    handleSendCaptcha() {
+        if(!this.form.contactPhone){
+            this.$message.error("手机号不能为空")
+            return; 
+        }
+        this.$store.dispatch('user/getcaptcha',this.form.contactPhone)
+        .then(res=>{
+                this.$message.success('验证码是：000000')
+        })
+    },
 
     // 提交订单
-    handleSubmit() {},
+    handleSubmit() {
+        // 自定义表单规则
+        const rules={
+            user: {
+                errmsg:'乘坐人信息不能为空',
+                validator:()=>{
+                    let valid  = true
+                    this.form.user.forEach(v=>{
+                        if(!v.name || !v.id){
+                            valid = false
+                        }
+                    })
+                    return valid
+                }
+            },
+            contactName:{
+                errmsg:'联系人不能为空',
+                validator:()=>{
+                    return !!this.form.contactName
+                }
+            },
+            captcha:{
+                errmsg:'验证码不能为空',
+                validator:()=>{
+                    return !!this.form.captcha
+                }
+            }
+
+        }
+        
+        // 利用排他实现验证
+        let valid = true
+        //循环调用所有rules
+        Object.keys(rules).forEach(v=>{
+            //若有字段不通过，则不执行接下来的代码
+            if(!valid) return
+            console.log(valid);
+            const item = rules[v];
+            valid = item.validator()
+            if(!valid){
+                    this.$message.error(item.errmsg);
+                }
+        })
+        //若未通过则直接返回
+         if(!valid) return;
+         console.log(this.form)
+         this.$axios({
+           url:'/airorders',
+           method:'POST',
+           data:this.form,
+           headers:{
+             //设置请求头
+             Authorization: `Bearer ` + this.$store.state.user.userInfo.token
+           }
+         }).then(res=>{
+           console.log(res);
+           
+         })
+
+    },
     // 获取所选的保险id
     insuranceId(id){
-        let index= this.form.insurances.indexof(id)
+        let index= this.form.insurances.indexOf(id)
         // 如果已经有了这个id，说明当前是取消的状态
-        if(insuranceid != -1){
+        if(index != -1){
             this.form.insurances.splice(index,1)
+        }else{
+             this.form.insurances.push(id)
         }
-        this.form.insurances.push(id)
 
     }
   }

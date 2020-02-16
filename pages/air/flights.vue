@@ -78,14 +78,16 @@ export default {
     },
     //请求页面数据
     getpagelist(){
-      this.$axios({
-      url: "/airs",
-      params: this.$route.query
-    }).then(res => {
-      this.flights = res.data.flights;
-      this.total = res.data.total
-      this.data = {...res.data}
-    });
+
+        this.$axios({
+        url: "/airs",
+        params: this.$route.query
+      }).then(res => {
+        this.flights = res.data.flights;
+        this.total = res.data.total
+        this.data = {...res.data}
+      })
+
     }
   },
 //   1        0-5      （页码-1）*每页条数 页码*每页条数
@@ -109,9 +111,10 @@ export default {
     beforeRouteUpdate (to, from, next) {
         // 每次url变化时候把pageIndex初始化为1
         this.pageIndex = 1;
-        // 请求机票列表数据
-        this.getList();
         next();
+        // 请求机票列表数据
+        this.getpagelist();
+        
     },	    
 };
 </script>

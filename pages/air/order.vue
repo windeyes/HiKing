@@ -7,18 +7,21 @@
             </div>
 
             <!-- 侧边栏 -->
-            <div class="aside">
-                          
-            </div>
+            
+                   <orderAside :data="$store.state.air.orderdetail"/>       
+        
         </el-row>
     </div>
 </template>
 
 <script>
 import orderForm from '@/components/air/orderForm'
+import orderAside from '@/components/air/orderAside'
+
+
 export default {
    components: {
-       orderForm
+       orderForm,orderAside
    } 
 }
 </script>

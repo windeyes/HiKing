@@ -45,14 +45,7 @@
 
 <script>
 export default {
-    data () {
-        return {
-            historydata:""
-        }
-    },
-    mounted () {
-        this.historydata = this.$store.state.air.history
-    }
+    
 
 }
 </script>

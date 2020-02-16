@@ -34,7 +34,9 @@ export default {
           if (valid) {
             this.$store.dispatch('user/login',this.user).then(res=>{
               this.$message.success('登录成功')
-              this.$router.push('/')
+              //使用replace
+              // this.$router.push('/')
+              this.$router.replace(this.$route.query.returnUrl || '/')
             })
            
           } else {
